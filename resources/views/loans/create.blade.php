@@ -199,6 +199,26 @@
                         </div>
                     </div>
 
+                    <div class="col-12 col-lg-6">
+                        <div class="field-box">
+                            <label class="form-label custom-label">دفترچه عضو</label>
+                            <div class="input-icon-wrap">
+                                <span class="input-icon">
+                                    <i class="bi bi-journal-text"></i>
+                                </span>
+                                <select name="passbook_id" class="form-select modern-select input-with-icon" required>
+                                    <option value="">انتخاب کنید...</option>
+                                    @foreach($passbooks as $p)
+                                        <option value="{{ $p->id }}" {{ old('passbook_id') == $p->id ? 'selected' : '' }}>
+                                            {{ $p->member?->full_name }} — {{ $p->number ?: ('#'.$p->id) }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-hint">دفترچه‌ای که این وام روی آن ثبت می‌شود.</div>
+                        </div>
+                    </div>
+
                     <div class="col-12 col-lg-3">
                         <div class="field-box">
                             <label class="form-label custom-label">مبلغ وام (اصل)</label>

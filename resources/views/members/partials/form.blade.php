@@ -51,6 +51,14 @@
         padding-left: 46px;
     }
 </style>
+@php
+    $defaultPassbookNumbers = old(
+        'passbook_numbers',
+        isset($member) && $member
+            ? $member->passbooks()->whereNotNull('number')->pluck('number')->implode('، ')
+            : ''
+    );
+@endphp
 <div class="row g-4">
     <div class="col-12 col-lg-6">
         <div class="field-box">
@@ -133,6 +141,26 @@
                     <option value="0" @selected(old('is_active', optional($member)->is_active ?? 1)==0)>غیرفعال</option>
                 </select>
             </div>
+        </div>
+    </div>
+
+    <div class="col-12">
+        <div class="field-box">
+            <label class="form-label custom-label">شماره دفترچه‌ها</label>
+            <div class="input-icon-wrap">
+                <span class="input-icon">
+                    <i class="bi bi-journal-text"></i>
+                </span>
+                <input
+                    name="passbook_numbers"
+                    class="form-control modern-input input-with-icon"
+                    value="{{ $defaultPassbookNumbers }}"
+                    placeholder="مثلاً 101، 145، 178"
+                >
+            </div>
+            <small class="text-muted d-block mt-2">
+                شماره دفترچه‌ها را با ویرگول یا فاصله وارد کنید. هر عضو می‌تواند چند دفترچه داشته باشد.
+            </small>
         </div>
     </div>
 </div>

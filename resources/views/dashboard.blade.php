@@ -303,7 +303,7 @@
                     <tbody>
                         @forelse($dueSoon as $i)
                             <tr>
-                                <td>{{ $i->due_date }}</td>
+                                <td>@jdate($i->due_date)</td>
                                 <td>
                                     <a href="{{ route('loans.show', $i->loan_id) }}" class="loan-link">
                                         #{{ $i->loan_id }}

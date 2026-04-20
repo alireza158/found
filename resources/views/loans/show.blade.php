@@ -358,7 +358,7 @@
                                             <span class="installment-id">#{{ $i->id }}</span>
                                         </td>
                                         <td>
-                                            <span class="due-date-badge">{{ $i->due_date }}</span>
+                                            <span class="due-date-badge">@jdate($i->due_date)</span>
                                         </td>
                                         <td>
                                             <span class="amount-text">{{ number_format($i->total_due) }}</span>

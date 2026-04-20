@@ -216,13 +216,13 @@
                             <td>
                                 <span class="date-badge">
                                     <i class="bi bi-calendar-event me-1"></i>
-                                    {{ $p->starts_at }}
+                                    @jdate($p->starts_at)
                                 </span>
                             </td>
                             <td>
                                 <span class="date-badge">
                                     <i class="bi bi-calendar-check me-1"></i>
-                                    {{ $p->ends_at }}
+                                    @jdate($p->ends_at)
                                 </span>
                             </td>
                             <td>
