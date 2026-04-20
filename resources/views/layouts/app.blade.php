@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@yield('title', 'صندوق خانوادگی')</title>
+    <title>@yield('title', 'صندوق خانوادگی حبیب')</title>
 
   <link href="{{ asset('assets/bootstrap.rtl.min.css') }}" rel="stylesheet">
 <link rel="stylesheet" href="{{ asset('assets/bootstrap-icons.min.css') }}">
@@ -184,7 +184,7 @@
             <span class="brand-badge">
                 <i class="bi bi-wallet2"></i>
             </span>
-            <span>صندوق خانوادگی</span>
+            <span>صندوق خانوادگی حبیب</span>
         </a>
 
         <button class="navbar-toggler text-white" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
