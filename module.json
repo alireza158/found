@@ -1,0 +1,7 @@
+{
+  "name": "family-fund-module",
+  "target": "Laravel 10/11",
+  "ui": "Blade + Bootstrap 5 (CDN)",
+  "auth": "Custom session auth (users table) + roles",
+  "created_at": "2026-02-22"
+}
