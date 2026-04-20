@@ -117,6 +117,34 @@ class MemberController extends Controller
         return back()->with('err','در نسخه MVP حذف عضو غیرفعال است. عضو را غیرفعال کنید.');
     }
 
+    public function storePassbook(Request $request, Member $member)
+    {
+        $data = $request->validate([
+            'number' => ['required', 'string', 'max:100'],
+            'title' => ['nullable', 'string', 'max:190'],
+        ]);
+
+        $number = trim($data['number']);
+        if ($number === '') {
+            return back()->with('err', 'شماره دفترچه را وارد کنید.');
+        }
+
+        $passbook = Passbook::query()->firstOrCreate(
+            ['member_id' => $member->id, 'number' => $number],
+            [
+                'title' => trim((string) ($data['title'] ?? '')) ?: 'دفترچه شماره '.$number,
+                'type' => 'savings',
+                'is_active' => true,
+            ]
+        );
+
+        if (!$passbook->wasRecentlyCreated) {
+            return back()->with('err', 'این شماره دفترچه قبلاً برای این عضو ثبت شده است.');
+        }
+
+        return redirect()->route('members.show', $member)->with('ok', 'دفترچه جدید با موفقیت اضافه شد.');
+    }
+
     private function parsePassbookNumbers(?string $raw): array
     {
         if (!$raw) {

@@ -97,6 +97,18 @@
         white-space: nowrap;
     }
 
+    .passbook-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: #eff6ff;
+        color: #1d4ed8;
+        font-size: 12px;
+        font-weight: 800;
+    }
+
     .fee-text {
         color: #7c3aed;
     }
@@ -196,6 +208,7 @@
                     <tr>
                         <th>#</th>
                         <th>عضو</th>
+                        <th>دفترچه</th>
                         <th>اصل وام</th>
                         <th>کارمزد</th>
                         <th>اقساط</th>
@@ -214,6 +227,12 @@
                                     <i class="bi bi-person-circle me-1"></i>
                                     {{ $l->member->full_name }}
                                 </a>
+                            </td>
+                            <td>
+                                <span class="passbook-badge">
+                                    <i class="bi bi-journal-text"></i>
+                                    {{ $l->passbook?->number ?: ('#'.$l->passbook_id) }}
+                                </span>
                             </td>
                             <td>
                                 <span class="amount-text">{{ number_format($l->principal_amount) }}</span>
@@ -246,7 +265,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7">
+                            <td colspan="8">
                                 <div class="empty-state">
                                     <div class="empty-state-icon">
                                         <i class="bi bi-bank"></i>

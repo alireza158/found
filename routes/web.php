@@ -22,6 +22,8 @@ Route::middleware(['ff.auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::resource('members', MemberController::class);
+    Route::post('/members/{member}/passbooks', [MemberController::class, 'storePassbook'])
+        ->name('members.passbooks.store');
 
     Route::resource('periods', PeriodController::class)->except(['destroy']);
     Route::post('/periods/{period}/generate-contributions', [PeriodController::class, 'generateContributions'])

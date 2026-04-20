@@ -15,7 +15,7 @@ class LoanController extends Controller
 {
     public function index()
     {
-        $loans = Loan::query()->with(['member'])->orderByDesc('id')->paginate(20);
+        $loans = Loan::query()->with(['member', 'passbook'])->orderByDesc('id')->paginate(20);
         return view('loans.index', compact('loans'));
     }
 
@@ -95,7 +95,7 @@ class LoanController extends Controller
 
     public function show(Loan $loan)
     {
-        $loan->load(['member','installments']);
+        $loan->load(['member','passbook','installments']);
         return view('loans.show', compact('loan'));
     }
 
