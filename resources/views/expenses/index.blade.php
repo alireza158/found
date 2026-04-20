@@ -204,7 +204,7 @@
                                 <span class="expense-id">#{{ $e->id }}</span>
                             </td>
                             <td>
-                                <span class="date-badge">{{ $e->occurred_at }}</span>
+                                <span class="date-badge">@jdatetime($e->occurred_at)</span>
                             </td>
                             <td>
                                 <span class="category-badge">{{ $e->category }}</span>

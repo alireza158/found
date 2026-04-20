@@ -359,7 +359,7 @@
                                 </span>
                             </td>
 
-                            <td>{{ $d->draw_date }}</td>
+                            <td>@jdate($d->draw_date)</td>
 
                             <td>
                                 <span class="method-badge">

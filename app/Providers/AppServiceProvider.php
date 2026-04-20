@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +20,16 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Blade::directive('jdate', function ($expression) {
+            return "<?php echo \\App\\Support\\PersianDate::format($expression); ?>";
+        });
+
+        Blade::directive('jdatetime', function ($expression) {
+            return "<?php echo \\App\\Support\\PersianDate::format($expression, true); ?>";
+        });
+
+        Blade::directive('gdate', function ($expression) {
+            return "<?php echo \\App\\Support\\PersianDate::inputValue($expression); ?>";
+        });
     }
 }
