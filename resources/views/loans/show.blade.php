@@ -289,6 +289,11 @@
                         </div>
 
                         <div class="summary-item">
+                            <div class="summary-label">دفترچه مربوطه</div>
+                            <div class="summary-value small">{{ $loan->passbook?->number ?: ('#'.$loan->passbook_id) }}</div>
+                        </div>
+
+                        <div class="summary-item">
                             <div class="summary-label">اصل وام</div>
                             <div class="summary-value">{{ number_format($loan->principal_amount) }}</div>
                         </div>
