@@ -307,6 +307,58 @@
         <div class="col-12 col-lg-8">
             <div class="card main-card">
                 <div class="card-body">
+                    <div class="mb-4">
+                        <h5 class="section-title">دفترچه‌ها</h5>
+                        <p class="section-subtitle">شماره دفترچه‌های عضو و وضعیت درگیری آن‌ها در وام</p>
+                    </div>
+
+                    <div class="table-responsive mb-4">
+                        <table class="table align-middle table-modern">
+                            <thead>
+                                <tr>
+                                    <th>شماره دفترچه</th>
+                                    <th>عنوان</th>
+                                    <th>وضعیت وام</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($member->passbooks as $passbook)
+                                    @php
+                                        $activeLoan = $passbook->loans->firstWhere('status', 'active');
+                                    @endphp
+                                    <tr>
+                                        <td>{{ $passbook->number ?: '-' }}</td>
+                                        <td>{{ $passbook->title }}</td>
+                                        <td>
+                                            @if($activeLoan)
+                                                <span class="loan-status loan-status-active">
+                                                    <i class="bi bi-hourglass-split"></i>
+                                                    درگیر وام #{{ $activeLoan->id }}
+                                                </span>
+                                            @else
+                                                <span class="loan-status loan-status-done">
+                                                    <i class="bi bi-check-circle"></i>
+                                                    آزاد
+                                                </span>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="3">
+                                            <div class="empty-state">
+                                                <div class="empty-state-icon">
+                                                    <i class="bi bi-journal-x"></i>
+                                                </div>
+                                                <div class="fw-bold mb-1">دفترچه‌ای ثبت نشده</div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+
                     <div class="mb-3">
                         <h5 class="section-title">وام‌ها</h5>
                         <p class="section-subtitle">لیست وام‌های ثبت‌شده برای این عضو</p>
@@ -318,6 +370,7 @@
                                 <tr>
                                     <th>#</th>
                                     <th>مبلغ</th>
+                                    <th>دفترچه</th>
                                     <th>اقساط</th>
                                     <th>وضعیت</th>
                                     <th class="text-end">عملیات</th>
@@ -332,6 +385,7 @@
                                         <td>
                                             <span class="amount-text">{{ number_format($l->principal_amount) }}</span>
                                         </td>
+                                        <td>{{ $l->passbook?->number ?: ('#'.$l->passbook_id) }}</td>
                                         <td>
                                             <span class="count-badge">{{ $l->installments_count }}</span>
                                         </td>
@@ -357,7 +411,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="5">
+                                        <td colspan="6">
                                             <div class="empty-state">
                                                 <div class="empty-state-icon">
                                                     <i class="bi bi-bank"></i>

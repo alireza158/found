@@ -28,9 +28,12 @@ class MemberController extends Controller
             'national_id' => ['nullable','string','max:40'],
             'joined_at' => ['nullable','date'],
             'is_active' => ['nullable','boolean'],
+            'passbook_numbers' => ['nullable','string','max:2000'],
         ]);
 
-        DB::transaction(function () use ($data) {
+        $passbookNumbers = $this->parsePassbookNumbers($data['passbook_numbers'] ?? null);
+
+        DB::transaction(function () use ($data, $passbookNumbers) {
             $m = Member::query()->create([
                 'full_name' => $data['full_name'],
                 'phone' => $data['phone'] ?? null,
@@ -39,13 +42,25 @@ class MemberController extends Controller
                 'is_active' => (bool)($data['is_active'] ?? true),
             ]);
 
-            // default savings passbook
-            Passbook::query()->create([
-                'member_id' => $m->id,
-                'title' => 'دفترچه پس‌انداز',
-                'type' => 'savings',
-                'is_active' => true,
-            ]);
+            if (count($passbookNumbers) === 0) {
+                Passbook::query()->create([
+                    'member_id' => $m->id,
+                    'number' => null,
+                    'title' => 'دفترچه پس‌انداز',
+                    'type' => 'savings',
+                    'is_active' => true,
+                ]);
+            } else {
+                foreach ($passbookNumbers as $number) {
+                    Passbook::query()->create([
+                        'member_id' => $m->id,
+                        'number' => $number,
+                        'title' => 'دفترچه شماره '.$number,
+                        'type' => 'savings',
+                        'is_active' => true,
+                    ]);
+                }
+            }
         });
 
         return redirect()->route('members.index')->with('ok','عضو ایجاد شد.');
@@ -53,7 +68,7 @@ class MemberController extends Controller
 
     public function show(Member $member)
     {
-        $member->load('passbooks','loans.installments');
+        $member->load(['passbooks.loans', 'loans.installments', 'loans.passbook']);
         return view('members.show', compact('member'));
     }
 
@@ -70,6 +85,7 @@ class MemberController extends Controller
             'national_id' => ['nullable','string','max:40'],
             'joined_at' => ['nullable','date'],
             'is_active' => ['nullable','boolean'],
+            'passbook_numbers' => ['nullable','string','max:2000'],
         ]);
 
         $member->update([
@@ -80,6 +96,18 @@ class MemberController extends Controller
             'is_active' => (bool)($data['is_active'] ?? false),
         ]);
 
+        $passbookNumbers = $this->parsePassbookNumbers($data['passbook_numbers'] ?? null);
+        foreach ($passbookNumbers as $number) {
+            Passbook::query()->firstOrCreate(
+                ['member_id' => $member->id, 'number' => $number],
+                [
+                    'title' => 'دفترچه شماره '.$number,
+                    'type' => 'savings',
+                    'is_active' => true,
+                ]
+            );
+        }
+
         return redirect()->route('members.show', $member)->with('ok','بروزرسانی شد.');
     }
 
@@ -87,5 +115,19 @@ class MemberController extends Controller
     {
         // safer: soft delete could be added; for MVP we block delete
         return back()->with('err','در نسخه MVP حذف عضو غیرفعال است. عضو را غیرفعال کنید.');
+    }
+
+    private function parsePassbookNumbers(?string $raw): array
+    {
+        if (!$raw) {
+            return [];
+        }
+
+        $parts = preg_split('/[\s,،]+/u', $raw) ?: [];
+        $numbers = array_values(array_unique(array_filter(array_map(static function ($item) {
+            return trim((string)$item);
+        }, $parts))));
+
+        return array_slice($numbers, 0, 50);
     }
 }
