@@ -211,7 +211,7 @@
                                 <span class="period-id">#{{ $p->id }}</span>
                             </td>
                             <td>
-                                <span class="period-code">{{ $p->year }}/{{ $p->month }}</span>
+                                <span class="period-code">@jyearmonth($p->starts_at)</span>
                             </td>
                             <td>
                                 <span class="date-badge">
