@@ -28,6 +28,10 @@ class AppServiceProvider extends ServiceProvider
             return "<?php echo \\App\\Support\\PersianDate::format($expression, true); ?>";
         });
 
+        Blade::directive('jyearmonth', function ($expression) {
+            return "<?php echo \\App\\Support\\PersianDate::yearMonth($expression); ?>";
+        });
+
         Blade::directive('gdate', function ($expression) {
             return "<?php echo \\App\\Support\\PersianDate::inputValue($expression); ?>";
         });
