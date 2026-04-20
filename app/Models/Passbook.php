@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Passbook extends Model
 {
     protected $fillable = [
-        'member_id','title','type','is_active'
+        'member_id','number','title','type','is_active'
     ];
 
     protected $casts = [
@@ -24,5 +24,10 @@ class Passbook extends Model
     public function transactions(): HasMany
     {
         return $this->hasMany(Transaction::class);
+    }
+
+    public function loans(): HasMany
+    {
+        return $this->hasMany(Loan::class);
     }
 }

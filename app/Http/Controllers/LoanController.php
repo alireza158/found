@@ -22,13 +22,22 @@ class LoanController extends Controller
     public function create()
     {
         $members = Member::query()->where('is_active', true)->orderBy('full_name')->get();
-        return view('loans.create', compact('members'));
+        $passbooks = Passbook::query()
+            ->with('member')
+            ->whereNotNull('member_id')
+            ->where('is_active', true)
+            ->orderBy('number')
+            ->orderBy('id')
+            ->get();
+
+        return view('loans.create', compact('members', 'passbooks'));
     }
 
     public function store(Request $request, LoanService $svc)
     {
         $data = $request->validate([
             'member_id' => ['required','exists:members,id'],
+            'passbook_id' => ['required','exists:passbooks,id'],
             'principal_amount' => ['required','integer','min:1'],
             'fee_amount' => ['nullable','integer','min:0'],
             'installments_count' => ['required','integer','min:1','max:120'],
@@ -36,24 +45,24 @@ class LoanController extends Controller
             'note' => ['nullable','string','max:500'],
         ]);
 
-        $central = Passbook::query()->where('type','central')->first();
-        if (!$central) return back()->with('err','دفترچه صندوق مرکزی وجود ندارد (seed را اجرا کنید).');
-
         $member = Member::query()->findOrFail($data['member_id']);
+        $passbook = Passbook::query()->where('id', $data['passbook_id'])->where('member_id', $member->id)->first();
+        if (!$passbook) {
+            return back()->withInput()->with('err','دفترچه انتخاب‌شده متعلق به این عضو نیست.');
+        }
 
-        // ensure member has no active loan (rule can be changed)
-        $activeLoan = Loan::query()->where('member_id', $member->id)->where('status','active')->exists();
-        if ($activeLoan) return back()->with('err','این عضو وام فعال دارد.');
+        $activeLoan = Loan::query()->where('passbook_id', $passbook->id)->where('status','active')->exists();
+        if ($activeLoan) return back()->withInput()->with('err','این دفترچه هم‌اکنون درگیر وام فعال است.');
 
         $loan = null;
 
-        DB::transaction(function () use (&$loan, $data, $central, $member, $svc) {
+        DB::transaction(function () use (&$loan, $data, $passbook, $member, $svc) {
             $fee = (int)($data['fee_amount'] ?? 0);
             $principal = (int)$data['principal_amount'];
 
             $loan = Loan::query()->create([
                 'member_id' => $member->id,
-                'passbook_id' => $central->id,
+                'passbook_id' => $passbook->id,
                 'principal_amount' => $principal,
                 'fee_amount' => $fee,
                 'total_amount' => $principal + $fee,
@@ -65,7 +74,7 @@ class LoanController extends Controller
 
             // Disbursement (outflow)
             Transaction::query()->create([
-                'passbook_id' => $central->id,
+                'passbook_id' => $passbook->id,
                 'member_id' => $member->id,
                 'period_id' => null,
                 'type' => 'loan_disbursement',
