@@ -145,6 +145,13 @@
         padding: 8px 14px;
     }
 
+    .actions-wrap {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 8px;
+    }
+
     .pagination-wrap {
         padding: 18px 22px;
         border-top: 1px solid #eef2f7;
@@ -238,10 +245,20 @@
                                 @endif
                             </td>
                             <td class="text-end">
-                                <a class="btn btn-sm btn-outline-secondary action-btn" href="{{ route('members.edit',$m) }}">
-                                    <i class="bi bi-pencil-square me-1"></i>
-                                    ویرایش
-                                </a>
+                                <div class="actions-wrap">
+                                    <a class="btn btn-sm btn-outline-primary action-btn" href="{{ route('members.show',$m) }}">
+                                        <i class="bi bi-eye me-1"></i>
+                                        مشاهده جزئیات
+                                    </a>
+                                    <a class="btn btn-sm btn-outline-success action-btn" href="{{ route('members.show',$m) }}#add-passbook">
+                                        <i class="bi bi-journal-plus me-1"></i>
+                                        افزودن دفترچه
+                                    </a>
+                                    <a class="btn btn-sm btn-outline-secondary action-btn" href="{{ route('members.edit',$m) }}">
+                                        <i class="bi bi-pencil-square me-1"></i>
+                                        ویرایش
+                                    </a>
+                                </div>
                             </td>
                         </tr>
                     @empty

@@ -210,6 +210,27 @@
         padding: 8px 14px;
     }
 
+    .passbook-add-box {
+        border: 1px dashed #cbd5e1;
+        border-radius: 18px;
+        padding: 16px;
+        margin-bottom: 18px;
+        background: #f8fafc;
+    }
+
+    .passbook-steps {
+        margin: 0 0 14px 0;
+        padding-right: 18px;
+        color: #475569;
+        font-size: 13px;
+        line-height: 1.9;
+    }
+
+    .passbook-input {
+        height: 46px;
+        border-radius: 12px;
+    }
+
     .empty-state {
         text-align: center;
         padding: 42px 16px;
@@ -310,6 +331,49 @@
                     <div class="mb-4">
                         <h5 class="section-title">دفترچه‌ها</h5>
                         <p class="section-subtitle">شماره دفترچه‌های عضو و وضعیت درگیری آن‌ها در وام</p>
+                    </div>
+
+                    <div id="add-passbook" class="passbook-add-box">
+                        <div class="fw-bold mb-2">افزودن دفترچه جدید</div>
+                        <ol class="passbook-steps">
+                            <li>شماره دفترچه را وارد کنید.</li>
+                            <li>در صورت نیاز، عنوان دلخواه بنویسید (اختیاری).</li>
+                            <li>روی «افزودن دفترچه» بزنید تا همان لحظه به لیست اضافه شود.</li>
+                        </ol>
+                        <form method="POST" action="{{ route('members.passbooks.store', $member) }}" class="row g-2">
+                            @csrf
+                            <div class="col-12 col-md-4">
+                                <input
+                                    type="text"
+                                    name="number"
+                                    class="form-control passbook-input @error('number') is-invalid @enderror"
+                                    value="{{ old('number') }}"
+                                    placeholder="شماره دفترچه"
+                                    required
+                                >
+                                @error('number')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-12 col-md-5">
+                                <input
+                                    type="text"
+                                    name="title"
+                                    class="form-control passbook-input @error('title') is-invalid @enderror"
+                                    value="{{ old('title') }}"
+                                    placeholder="عنوان (اختیاری)"
+                                >
+                                @error('title')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-12 col-md-3 d-grid">
+                                <button class="btn btn-success passbook-input">
+                                    <i class="bi bi-journal-plus me-1"></i>
+                                    افزودن دفترچه
+                                </button>
+                            </div>
+                        </form>
                     </div>
 
                     <div class="table-responsive mb-4">
